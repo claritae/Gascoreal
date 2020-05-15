@@ -49,6 +49,8 @@ export default class Interiorchecks extends React.Component {
       text: '',
       vehicleId: '',
       logId: '',
+      alert: false,
+      suc: false,
     };
   }
   getData = async () => {
@@ -81,8 +83,8 @@ export default class Interiorchecks extends React.Component {
     await this.setState({commentId: id});
     console.warn('press value', this.state.value);
     console.warn('id', id);
-    const me = this.state.answers.filter(i => i.checkTypeId === id);
-    const que = this.state.answers.find(el => el.checkTypeId === id);
+    const me = this.state.answers.filter((i) => i.checkTypeId === id);
+    const que = this.state.answers.find((el) => el.checkTypeId === id);
     console.warn('<<', me);
     if (this.state.value == true) {
       await this.setState({toggle: false});
@@ -90,7 +92,7 @@ export default class Interiorchecks extends React.Component {
       await this.setState({toggle: true});
       console.warn('toggle', this.state.toggle);
     }
-    this.state.answers.map(item => {
+    this.state.answers.map((item) => {
       if (item.checkTypeId === id) {
         item.status = value;
         item.comment = '';
@@ -132,14 +134,13 @@ export default class Interiorchecks extends React.Component {
           Accept: 'application/json',
         },
       })
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('res.logIdCheck', res);
         this.setState({logId: res.data.id});
         console.warn('logId2hhhhh', this.state.logId);
-       
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn('eee', error);
         this.setState({isloading: false});
         Snackbar.show({
@@ -159,7 +160,7 @@ export default class Interiorchecks extends React.Component {
           Accept: 'application/json',
         },
       })
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('res', res);
 
@@ -167,7 +168,7 @@ export default class Interiorchecks extends React.Component {
         console.warn('res2', this.state.collectdata);
 
         let ans = [];
-        res.data.items.map(item => {
+        res.data.items.map((item) => {
           ans.push({
             checkTypeId: item.id,
             status: '',
@@ -177,7 +178,7 @@ export default class Interiorchecks extends React.Component {
         console.warn('ans', ans);
         this.setState({answers: ans});
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn(error);
         this.setState({isloading: false});
         Snackbar.show({
@@ -191,9 +192,9 @@ export default class Interiorchecks extends React.Component {
     console.warn('id', id);
     console.warn('text', text);
     if (text.length === 0) {
-      alert('you must fill the commont field');
+      this.setState({alert: true});
     } else {
-      await this.state.answers.map(item => {
+      await this.state.answers.map((item) => {
         if (item.checkTypeId === id) {
           item.comment = text;
         }
@@ -219,7 +220,7 @@ export default class Interiorchecks extends React.Component {
           },
         },
       )
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('logres', res);
         this.setState({logId: res.data.id});
@@ -229,7 +230,7 @@ export default class Interiorchecks extends React.Component {
           alert(res.data.message);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn('logerror', error.response);
         this.setState({isloading: false});
         if (error.response.data.status == 409) {
@@ -237,6 +238,10 @@ export default class Interiorchecks extends React.Component {
         }
       });
   };
+  success() {
+    this.props.navigation.navigate('Truckcheck');
+    this.setState({suc: false});
+  }
 
   submit = async () => {
     this.setState({isloading: true});
@@ -253,13 +258,13 @@ export default class Interiorchecks extends React.Component {
           },
         },
       )
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn(res);
-        this.props.navigation.navigate('Truckcheck');
-        alert('Submitted  Successfully');
+
+        this.setState({suc: true});
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn(error.response.data.code);
         this.setState({isloading: false});
         if (error.response.data.code == 400) {
@@ -341,7 +346,7 @@ export default class Interiorchecks extends React.Component {
                   formHorizontal={true}
                   initial={-1}
                   key={0}
-                  onPress={value => this.press(value, item.id)}
+                  onPress={(value) => this.press(value, item.id)}
                 />
               </TouchableOpacity>
             ))}
@@ -376,7 +381,7 @@ export default class Interiorchecks extends React.Component {
                   marginTop: RH(3),
                   padding: 10,
                 }}
-                onChangeText={text => this.setState({text})}
+                onChangeText={(text) => this.setState({text})}
                 placeholder="Check failed due to"
               />
               <TouchableOpacity
@@ -394,7 +399,7 @@ export default class Interiorchecks extends React.Component {
                 onPress={() =>
                   this.saved(this.state.commentId, this.state.text)
                 }>
-                <Text style={{color: '#058BC5'}}> Save&Continue</Text>
+                <Text style={{color: '#058BC5'}}> Safe & Continue</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -403,6 +408,50 @@ export default class Interiorchecks extends React.Component {
         {this.state.isloading ? (
           <View style={styles.popUp2}>
             <ActivityIndicator size="large" color="#058BC5" />
+          </View>
+        ) : null}
+
+        {this.state.alert ? (
+          <View style={styles.popUp2}>
+            <View style={styles.card2}>
+              <Text>Please write a comment</Text>
+
+              <TouchableOpacity
+                style={{
+                  marginTop: RH(2),
+                  borderColor: '#E6EAEE',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: RH(4),
+                  width: RW(20),
+                }}
+                onPress={() => this.setState({alert: false})}>
+                <Text>ok</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : null}
+
+        {this.state.suc ? (
+          <View style={styles.popUp2}>
+            <View style={styles.card2}>
+              <Text>Submitted Successfully</Text>
+
+              <TouchableOpacity
+                style={{
+                  marginTop: RH(2),
+                  borderColor: '#E6EAEE',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: RH(4),
+                  width: RW(20),
+                }}
+                onPress={() => this.success()}>
+                <Text>ok</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : null}
       </View>
@@ -508,5 +557,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#E6EAEE',
     marginTop: RH(3),
+  },
+  card2: {
+    backgroundColor: '#FFFFFF',
+    width: '50%',
+
+    borderRadius: 4,
+    height: RH(15),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
