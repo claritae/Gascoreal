@@ -127,7 +127,7 @@ export default class Truckcheck extends React.Component {
           },
         },
       )
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('rescheck', res.data);
         this.setState({logId: res.data.items[0].id});
@@ -138,7 +138,7 @@ export default class Truckcheck extends React.Component {
         // this.checkShedule3(res.data.items[0].checks);
         // this.checkShedule4(res.data.items[0].checks);
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({isloading: false});
         console.warn('eee', error);
 
@@ -160,38 +160,47 @@ export default class Truckcheck extends React.Component {
           Accept: 'application/json',
         },
       })
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('res.logIdCheck', res.data.checks);
         this.setState({logId: res.data.id});
         console.warn('logId2hhhhh', this.state.logId);
-        res.data.checks.map(item => {
-          if (item.status == null && item.checkGroup == 'INTERIOR_CHECK') {
+        res.data.checks.map((item) => {
+          if (item.checkGroup == 'INTERIOR_CHECK' && item.status == null) {
             console.warn('seeit INTERIOR_CHECK', item.checkGroup);
             this.setState({interior: 'Y'});
-          } else {
+          } else if (
+            item.checkGroup == 'INTERIOR_CHECK' &&
+            item.status != null
+          ) {
             console.warn('seeit INTERIOR_CHECK NNNN', item.checkGroup);
             this.setState({interior: 'N'});
           }
-          if (item.status == null && item.checkGroup == 'GENERAL_CHECK') {
+          if (item.checkGroup == 'GENERAL_CHECK' && item.status == null) {
             console.warn('seeit GENERAL_CHECK', item.checkGroup);
             this.setState({general: 'Y'});
-          } else {
+          } else if (
+            item.checkGroup == 'GENERAL_CHECK' &&
+            item.status != null
+          ) {
             console.warn('seeit GENERAL_CHECK NNNN', item.checkGroup);
             this.setState({general: 'N'});
           }
-          if (item.status == null && item.checkGroup == 'SAFETY_CHECK') {
+          if (item.checkGroup == 'SAFETY_CHECK' && item.status == null) {
             console.warn('seeit SAFETY_CHECK', item.checkGroup);
             this.setState({safety: 'Y'});
-          } else {
+          } else if (item.checkGroup == 'SAFETY_CHECK' && item.status != null) {
             console.warn('seeit SAFETY_CHECK NNNN', item.checkGroup);
             this.setState({safety: 'N'});
           }
 
-          if (item.status == null && item.checkGroup == 'EXTERIOR_CHECK') {
+          if (item.checkGroup == 'EXTERIOR_CHECK' && item.status == null) {
             console.warn('seeit EXTERIOR_CHECK', item.checkGroup);
             this.setState({exterior: 'Y'});
-          } else {
+          } else if (
+            item.checkGroup == 'EXTERIOR_CHECK' &&
+            item.status != null
+          ) {
             console.warn('seeit EXTERIOR_CHECK NNNN', item.checkGroup);
             this.setState({exterior: 'N'});
           }
@@ -201,7 +210,7 @@ export default class Truckcheck extends React.Component {
           this.checkShedule4();
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn('eee', error);
         this.setState({isloading: false});
         Snackbar.show({
@@ -210,7 +219,7 @@ export default class Truckcheck extends React.Component {
         });
       });
   }
-  storeDataReal = async res => {
+  storeDataReal = async (res) => {
     try {
       console.warn('token', res);
       await AsyncStorage.setItem('logId', res);
@@ -236,7 +245,7 @@ export default class Truckcheck extends React.Component {
           },
         },
       )
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('logres', res);
         this.setState({logId: res.data.id});
@@ -244,7 +253,7 @@ export default class Truckcheck extends React.Component {
         this.storeDataReal(this.state.logId);
         this.getLastId();
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn('logerror', error.response.data.status);
         this.setState({isloading: false});
         if (error.response.data.status == 409) {
@@ -389,9 +398,9 @@ export default class Truckcheck extends React.Component {
     await this.log();
     await this.getLogId();
     await this.getLastId2();
-    // this.focusListener = navigation.addListener('didFocus', () =>
-    //   this.getLastId2(),
-    // );
+    this.focusListener = navigation.addListener('didFocus', () =>
+      this.getLastId2(),
+    );
 
     // await this.getData3();
 
@@ -448,52 +457,6 @@ export default class Truckcheck extends React.Component {
             {this.checkShedule4()}
           </ScrollView>
         </View>
-
-        {touch ? (
-          <View style={styles.popUp}>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={() => this.setState({touch: false})}>
-              <View style={styles.card}>
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate(
-                      'Service',
-                      {user: this.state.user},
-                      this.setState({touch: false}),
-                    )
-                  }>
-                  <Text style={styles.text}>Bill & Payment </Text>
-                  <View style={styles.line} />
-                </TouchableOpacity>
-
-                <TouchableOpacity>
-                  <Text style={styles.text}>Transactions </Text>
-                  <View style={styles.line} />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate(
-                      'Findestate',
-                      {
-                        user: this.state.user,
-                      },
-                      this.setState({touch: false}),
-                    )
-                  }>
-                  <Text style={styles.text}>New Estate Registration </Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={() => this.setState({touch: false})}>
-              <View style={{height: '35%', width: '100%'}} />
-            </TouchableOpacity>
-          </View>
-        ) : null}
 
         {this.state.isloading ? (
           <View style={styles.popUp2}>

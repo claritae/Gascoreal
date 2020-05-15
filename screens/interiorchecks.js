@@ -81,8 +81,8 @@ export default class Interiorchecks extends React.Component {
     await this.setState({commentId: id});
     console.warn('press value', this.state.value);
     console.warn('id', id);
-    const me = this.state.answers.filter(i => i.checkTypeId === id);
-    const que = this.state.answers.find(el => el.checkTypeId === id);
+    const me = this.state.answers.filter((i) => i.checkTypeId === id);
+    const que = this.state.answers.find((el) => el.checkTypeId === id);
     console.warn('<<', me);
     if (this.state.value == true) {
       await this.setState({toggle: false});
@@ -90,7 +90,7 @@ export default class Interiorchecks extends React.Component {
       await this.setState({toggle: true});
       console.warn('toggle', this.state.toggle);
     }
-    this.state.answers.map(item => {
+    this.state.answers.map((item) => {
       if (item.checkTypeId === id) {
         item.status = value;
         item.comment = '';
@@ -132,14 +132,13 @@ export default class Interiorchecks extends React.Component {
           Accept: 'application/json',
         },
       })
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('res.logIdCheck', res);
         this.setState({logId: res.data.id});
         console.warn('logId2hhhhh', this.state.logId);
-       
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn('eee', error);
         this.setState({isloading: false});
         Snackbar.show({
@@ -159,7 +158,7 @@ export default class Interiorchecks extends React.Component {
           Accept: 'application/json',
         },
       })
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('res', res);
 
@@ -167,7 +166,7 @@ export default class Interiorchecks extends React.Component {
         console.warn('res2', this.state.collectdata);
 
         let ans = [];
-        res.data.items.map(item => {
+        res.data.items.map((item) => {
           ans.push({
             checkTypeId: item.id,
             status: '',
@@ -177,7 +176,7 @@ export default class Interiorchecks extends React.Component {
         console.warn('ans', ans);
         this.setState({answers: ans});
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn(error);
         this.setState({isloading: false});
         Snackbar.show({
@@ -193,7 +192,7 @@ export default class Interiorchecks extends React.Component {
     if (text.length === 0) {
       alert('you must fill the commont field');
     } else {
-      await this.state.answers.map(item => {
+      await this.state.answers.map((item) => {
         if (item.checkTypeId === id) {
           item.comment = text;
         }
@@ -219,7 +218,7 @@ export default class Interiorchecks extends React.Component {
           },
         },
       )
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn('logres', res);
         this.setState({logId: res.data.id});
@@ -229,7 +228,7 @@ export default class Interiorchecks extends React.Component {
           alert(res.data.message);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn('logerror', error.response);
         this.setState({isloading: false});
         if (error.response.data.status == 409) {
@@ -253,13 +252,13 @@ export default class Interiorchecks extends React.Component {
           },
         },
       )
-      .then(res => {
+      .then((res) => {
         this.setState({isloading: false});
         console.warn(res);
         this.props.navigation.navigate('Truckcheck');
         alert('Submitted  Successfully');
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn(error.response.data.code);
         this.setState({isloading: false});
         if (error.response.data.code == 400) {
@@ -341,7 +340,7 @@ export default class Interiorchecks extends React.Component {
                   formHorizontal={true}
                   initial={-1}
                   key={0}
-                  onPress={value => this.press(value, item.id)}
+                  onPress={(value) => this.press(value, item.id)}
                 />
               </TouchableOpacity>
             ))}
@@ -376,7 +375,7 @@ export default class Interiorchecks extends React.Component {
                   marginTop: RH(3),
                   padding: 10,
                 }}
-                onChangeText={text => this.setState({text})}
+                onChangeText={(text) => this.setState({text})}
                 placeholder="Check failed due to"
               />
               <TouchableOpacity
@@ -394,7 +393,7 @@ export default class Interiorchecks extends React.Component {
                 onPress={() =>
                   this.saved(this.state.commentId, this.state.text)
                 }>
-                <Text style={{color: '#058BC5'}}> Save&Continue</Text>
+                <Text style={{color: '#058BC5'}}> Save & Continue</Text>
               </TouchableOpacity>
             </View>
           </View>
