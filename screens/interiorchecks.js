@@ -49,6 +49,8 @@ export default class Interiorchecks extends React.Component {
       text: '',
       vehicleId: '',
       logId: '',
+      alert: false,
+      suc: false,
     };
   }
   getData = async () => {
@@ -190,7 +192,7 @@ export default class Interiorchecks extends React.Component {
     console.warn('id', id);
     console.warn('text', text);
     if (text.length === 0) {
-      alert('you must fill the commont field');
+      this.setState({alert: true});
     } else {
       await this.state.answers.map((item) => {
         if (item.checkTypeId === id) {
@@ -236,6 +238,10 @@ export default class Interiorchecks extends React.Component {
         }
       });
   };
+  success() {
+    this.props.navigation.navigate('Truckcheck');
+    this.setState({suc: false});
+  }
 
   submit = async () => {
     this.setState({isloading: true});
@@ -255,8 +261,8 @@ export default class Interiorchecks extends React.Component {
       .then((res) => {
         this.setState({isloading: false});
         console.warn(res);
-        this.props.navigation.navigate('Truckcheck');
-        alert('Submitted  Successfully');
+
+        this.setState({suc: true});
       })
       .catch((error) => {
         console.warn(error.response.data.code);
@@ -393,7 +399,7 @@ export default class Interiorchecks extends React.Component {
                 onPress={() =>
                   this.saved(this.state.commentId, this.state.text)
                 }>
-                <Text style={{color: '#058BC5'}}> Save & Continue</Text>
+                <Text style={{color: '#058BC5'}}> Safe & Continue</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -402,6 +408,50 @@ export default class Interiorchecks extends React.Component {
         {this.state.isloading ? (
           <View style={styles.popUp2}>
             <ActivityIndicator size="large" color="#058BC5" />
+          </View>
+        ) : null}
+
+        {this.state.alert ? (
+          <View style={styles.popUp2}>
+            <View style={styles.card2}>
+              <Text>Please write a comment</Text>
+
+              <TouchableOpacity
+                style={{
+                  marginTop: RH(2),
+                  borderColor: '#E6EAEE',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: RH(4),
+                  width: RW(20),
+                }}
+                onPress={() => this.setState({alert: false})}>
+                <Text>ok</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : null}
+
+        {this.state.suc ? (
+          <View style={styles.popUp2}>
+            <View style={styles.card2}>
+              <Text>Submitted Successfully</Text>
+
+              <TouchableOpacity
+                style={{
+                  marginTop: RH(2),
+                  borderColor: '#E6EAEE',
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: RH(4),
+                  width: RW(20),
+                }}
+                onPress={() => this.success()}>
+                <Text>ok</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : null}
       </View>
@@ -507,5 +557,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#E6EAEE',
     marginTop: RH(3),
+  },
+  card2: {
+    backgroundColor: '#FFFFFF',
+    width: '50%',
+
+    borderRadius: 4,
+    height: RH(15),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
